@@ -1,4 +1,5 @@
 var exec = require('cordova/exec');
+var SiriShortcuts = function () {};
 
 /**
  * Donate shortcut to Siri
@@ -13,7 +14,7 @@ var exec = require('cordova/exec');
  * @param {function(error) : void} error Function to call upon unsuccessful donation, for example if the user has an iOS version < 12.0
  * @return void
  */
-exports.donate = function (options, success, error) {
+SiriShortcuts.prototype.donate = function (options, success, error) {
     exec(success, error, 'SiriShortcuts', 'donate', [options.persistentIdentifier, options.title, options.suggestedInvocationPhrase, options.userInfo, options.isEligibleForSearch, options.isEligibleForPrediction]);
 };
 
@@ -28,7 +29,7 @@ exports.donate = function (options, success, error) {
  * @param {function(error) : void} error Function to call upon unsuccessful donation, for example if the user has an iOS version < 12.0
  * @return void
  */
-exports.present = function (options, success, error) {
+SiriShortcuts.prototype.present = function (options, success, error) {
     exec(success, error, 'SiriShortcuts', 'present', [options.persistentIdentifier, options.title, options.suggestedInvocationPhrase, options.userInfo, options.isEligibleForSearch, options.isEligibleForPrediction]);
 };
 
@@ -39,7 +40,7 @@ exports.present = function (options, success, error) {
  * @param {function(error) : void} error  Function to call upon unsuccessful removal
  * @return void
  */
-exports.remove = function (persistentIdentifiers, success, error) {
+SiriShortcuts.prototype.remove = function (persistentIdentifiers, success, error) {
     if (typeof persistentIdentifiers === 'string') {
         persistentIdentifiers = [persistentIdentifiers];
     }
@@ -53,7 +54,7 @@ exports.remove = function (persistentIdentifiers, success, error) {
  * @param {function(error) : void} error  Function to call upon unsuccessful removal
  * @return void
  */
-exports.removeAll = function(success, error) {
+SiriShortcuts.prototype.removeAll = function(success, error) {
     exec(success, error, 'SiriShortcuts', 'removeAll');
 };
 
@@ -65,8 +66,8 @@ exports.removeAll = function(success, error) {
  * @param {function(error) : void} error  Function to call upon unsuccessful removal
  * @return void
  */
-exports.getActivatedShortcut = function(options, success, error) {
-    if (typeof options === typeof {}) {
+SiriShortcuts.prototype.getActivatedShortcut = function(options, success, error) {
+    if (typeof options !== typeof {}) {
         options = {};
     }
 
@@ -76,3 +77,10 @@ exports.getActivatedShortcut = function(options, success, error) {
 
     exec(success, error, 'SiriShortcuts', 'getActivatedShortcut', [options.clear]);
 };
+
+if (!window.plugins) {
+	window.plugins = {};
+}
+
+window.plugins.siriShortcuts = new SiriShortcuts();
+module.exports = window.plugins.siriShortcuts;
